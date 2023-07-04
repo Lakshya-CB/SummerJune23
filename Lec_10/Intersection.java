@@ -10,7 +10,7 @@ public class Intersection {
 	public static void solve(int[]arr1 , int[] arr2) {
 		int idx1 =0;
 		int idx2=0;
-		for(;idx1<arr1.length && idx2<arr2.length;) {
+		while(idx1<arr1.length && idx2<arr2.length) {
 			if(arr1[idx1]<arr2[idx2]) {
 				idx1++;
 			}else if(arr1[idx1]>arr2[idx2]) {
