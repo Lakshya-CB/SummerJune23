@@ -1,5 +1,7 @@
 package Lec_LL_27;
 
+import java.util.Stack;
+
 public class LinkedList {
 	class Node {
 		public Node(int ali) {
@@ -160,12 +162,13 @@ public class LinkedList {
 		}
 		head = prev;
 	}
+
 	public void Rev2() {
 		Rev2(head);
 	}
 
 	private Node Rev2(Node nn) {
-		if(nn.next ==null) {
+		if (nn.next == null) {
 			head = nn;
 			return nn;
 		}
@@ -173,5 +176,56 @@ public class LinkedList {
 		Tail.next = nn;
 		nn.next = null;
 		return nn;
+	}
+
+	public void K_Rev(int k) {
+		Node temp = head;
+		Stack<Node> S = new Stack<>();
+		Node nhead = null;
+		Node ntail = null;
+		while (temp != null) {
+			Node after = temp.next;
+			S.add(temp);
+			if (S.size() == k) {
+				while (!S.isEmpty()) {
+					Node nn = S.pop();
+//					new linkedList ke last mein daal do!!
+					if (nhead == null) {
+						nhead = nn;
+						ntail = nn;
+						ntail.next = null;
+					} else {
+						ntail.next = nn;
+						ntail = nn;
+						ntail.next = null;
+					}
+				}
+			}
+
+			temp = after;
+		}
+		head = nhead; 
+	}
+	public int getMid() {
+		Node slow = head;
+		Node fast = head;
+		while(fast!=null && fast.next!=null) {
+			slow  = slow.next;
+			fast = fast.next.next;
+		}
+		return slow.data;
+	}
+	public boolean detectCycle() {
+		Node slow = head;
+		Node fast = head;
+		while(fast!=null && fast.next!=null) {
+			slow  = slow.next;
+			fast = fast.next.next;
+			if(slow==fast) {
+				return true;
+			}
+		}
+		return false;
+	
 	}
 }
