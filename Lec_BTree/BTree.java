@@ -84,6 +84,8 @@ public class BTree {
 		int L = Ht(nn.left);
 		int R = Ht(nn.right);
 		int self = L + R + 2;
+		boolean self_isBal = Math.abs(L - R) <= 1;
+
 		global = Math.max(global, self);
 		return 1 + Math.max(L, R);
 	}
@@ -183,22 +185,130 @@ public class BTree {
 			idx++;
 		}
 	}
-	
+
 	public boolean isBal() {
-		return isBal(root);
+		return isBal2(root).isBal;
 	}
 
 	private boolean isBal(Node nn) {
-		if(nn==null) {
+		if (nn == null) {
 			return true;
 		}
 		boolean L = isBal(nn.left);
 		boolean R = isBal(nn.right);
-		boolean self = Math.abs(Ht(nn.left)-Ht(nn.right))<=1;
-		return L&&R&& self;
+		boolean self = Math.abs(Ht(nn.left) - Ht(nn.right)) <= 1;
+		return L && R && self;
 	}
-	
-	
-	
-	
+
+	class isBalPair {
+		boolean isBal = true;
+		int Ht = -1;
+	}
+
+	private isBalPair isBal2(Node nn) {
+		if (nn == null) {
+			return new isBalPair();
+		}
+		isBalPair L = isBal2(nn.left);
+		isBalPair R = isBal2(nn.right);
+		boolean self = Math.abs(L.Ht - R.Ht) <= 1;
+		isBalPair ans = new isBalPair();
+		ans.Ht = Math.max(L.Ht, R.Ht) + 1;
+		ans.isBal = L.isBal && R.isBal && self;
+		return ans;
+	}
+
+	public boolean isBST() {
+		return isBST(root).isBST;
+	}
+
+	class isBSTPair {
+		boolean isBST = true;
+		int Max = Integer.MIN_VALUE;
+		int Min = Integer.MAX_VALUE;
+	}
+
+//	private boolean isBST(Node nn) {
+//		if(nn==null) {
+//			return true;
+//		}
+//		boolean L = isBST(nn.left);
+//		boolean R = isBST(nn.right);
+//		boolean self = Max(nn.left) <nn.data && Min(nn.right)>nn.data;
+//		return L && R && self;
+//	}
+	private isBSTPair isBST(Node nn) {
+		if (nn == null) {
+			return new isBSTPair();
+		}
+		isBSTPair L = isBST(nn.left);
+		isBSTPair R = isBST(nn.right);
+
+		isBSTPair ans = new isBSTPair();
+		ans.Min = Math.min(L.Min, nn.data);
+		ans.Max = Math.max(R.Max, nn.data);
+//		#########################
+		boolean self = L.Max < nn.data && R.Min > nn.data;
+
+//		###########################
+		ans.isBST = L.isBST && R.isBST && self;
+
+		return ans;
+	}
+
+	public void addBST(int ali) {
+		root = addBST(root, ali);
+	}
+
+	private Node addBST(Node nn, int ali) {
+		if (nn == null) {
+			return new Node(ali);
+		}
+		if (nn.data > ali) {
+			nn.left = addBST(nn.left, ali);
+		} else {
+			nn.right = addBST(nn.right, ali);
+		}
+		return nn;
+	}
+
+	public void removeBSTNode(int ali) {
+		root = remove(root, ali);
+
+	}
+
+	private Node remove(Node nn, int ali) {
+		if (nn == null) {
+			return null;
+		}
+		if (nn.data > ali) {
+			nn.left = remove(nn.left, ali);
+		} else if (nn.data < ali) {
+			nn.right = remove(nn.right, ali);
+		} else {
+//			/////////////////////
+//			c1 => nn is leaf!!
+			if (nn.left == null && nn.right == null) {
+				return null;
+			}else if(nn.left==null && nn.right!=null) {
+				return nn.right;
+			}else if(nn.left!=null && nn.right== null) {
+				return nn.left;
+			}else {
+//				step 1) replace it with min from right sub tree!!1
+				nn.data = Min(nn.right);
+//				////////
+//				delete karo nn.data from nn.right
+				nn.right = remove(nn.right, nn.data);
+			}
+		}
+		return nn;
+	}
+
+	private int Min(Node nn) {
+		if(nn.left==null) {
+			return nn.data;
+		}
+		return Min(nn.left);
+	}
 }
